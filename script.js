@@ -1,4 +1,4 @@
-// variables
+// Variables
 let workTittle = document.getElementById('work');
 let breakTittle = document.getElementById('break');
 
@@ -9,12 +9,29 @@ let seconds = "00";
 let breakCount = 0;
 let intervalId; // Variable to hold the interval ID for timer
 
+// Load notification sound
+let notificationSound = new Audio('./new-notification-7-210334.mp3'); //  Audio File
+
+// Notification details
+let notificationTitle = 'Break Time!'; // The Title Of The Notification
+let notificationBody = 'Time to take a break.'; // The Main Text Of The Notification
+let notificationIcon = './food.png'; // The Icon Of Notification
+
 // Display initial time
 window.onload = () => {
     document.getElementById('minutes').innerHTML = workTime;
     document.getElementById('seconds').innerHTML = seconds;
 
     workTittle.classList.add('active');
+
+    // Request notification permission
+    if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                console.log('Notification permission granted.');
+            }
+        });
+    }
 }
 
 // Start timer function
@@ -46,10 +63,15 @@ function start() {
             // Switch between work and break periods
             if (workMinutes < 0) {
                 if (breakCount % 2 === 0) {
+                    // Notify and switch to break
                     workMinutes = breakMinutes;
                     breakCount++;
                     workTittle.classList.remove('active');
                     breakTittle.classList.add('active');
+
+                    // Play sound and show notification
+                    notificationSound.play();
+                    showNotification(notificationTitle, notificationBody);
                 } else {
                     workMinutes = workTime;
                     breakCount++;
@@ -87,3 +109,12 @@ function resetTimer() {
     seconds = "00"; // Reset seconds to "00"
     breakCount = 0;
 }
+
+// Function to show notification
+function showNotification(title, body) {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: notificationIcon });
+    }
+}
+
+
