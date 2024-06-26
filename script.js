@@ -73,14 +73,24 @@ function start() {
                     notificationSound.play();
                     showNotification(notificationTitle, notificationBody);
                 } else {
+                    // Notify and switch to work
                     workMinutes = workTime;
                     breakCount++;
                     breakTittle.classList.remove('active');
                     workTittle.classList.add('active');
-                }
-            }
 
-            seconds = 59;
+                    // Play sound and show notification for break finished
+                    notificationSound.play();
+                    showNotification('Work Time!', 'Break time is over.');
+                }
+
+                // Reset seconds for the new period
+                seconds = 59;
+            } else if (workMinutes === 0 && seconds === 0) {
+                // If work time is finished and seconds are 0, notify for break time ending
+                notificationSound.play();
+                showNotification('Break Time!', 'Time to get back to work.');
+            }
         }
     }
 
@@ -116,5 +126,3 @@ function showNotification(title, body) {
         new Notification(title, { body: body, icon: notificationIcon });
     }
 }
-
-
